@@ -9,7 +9,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # ANXCamera
-$(call inherit-product-if-exists, vendor/aeonax/ANXCamera/anx-vendor.mk)
 
 # All components inherited here go to system_ext image
 $(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_system_ext.mk)
@@ -35,10 +34,6 @@ PRODUCT_CHARACTERISTICS := nosdcard
 # A/B status
 AB_OTA_UPDATER := false
 
-# AAPT
-PRODUCT_AAPT_CONFIG := normal
-PRODUCT_AAPT_PREF_CONFIG := xxhdpi
-
 # ANT+
 PRODUCT_PACKAGES += \
     AntHalService-Soong \
@@ -50,13 +45,14 @@ PRODUCT_PACKAGES += \
     audio.a2dp.default \
     libaacwrapper \
     libfmq \
-    tinymix
+    tinymix \
+    libaudiohal
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/audio/audio_policy_engine_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio_policy_engine_configuration.xml \
-    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio/audio_policy_configuration.xml \
     $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/audio/mixer_paths_wcd9375.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/mixer_paths_wcd9375.xml
+    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/audio/audio_policy_engine_configuration.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio_policy_engine_configuration.xml \
+    $(LOCAL_PATH)/audio/audio_policy_volumes.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/audio_policy_volumes.xml
 
 # APN list worldwide
 PRODUCT_COPY_FILES += \
@@ -70,7 +66,6 @@ PRODUCT_PACKAGES += \
 
 # Bluetooth
 PRODUCT_PACKAGES += \
-    BluetoothQti \
     libbluetooth_qti \
     libbtconfigstore \
     bt_configstore.conf \
@@ -159,6 +154,7 @@ PRODUCT_PACKAGES += \
 
 # NFC
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media_profiles_vendor.xml:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/media_profiles_vendor.xml \
     $(LOCAL_PATH)/configs/libnfc-nci.conf:$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/etc/libnfc-nci.conf
 
 PRODUCT_PACKAGES += \
@@ -168,7 +164,6 @@ PRODUCT_PACKAGES += \
     android.hardware.nfc@1.1:64 \
     android.hardware.nfc@1.2:64 \
     android.hardware.secure_element@1.0:64 \
-    com.gsma.services.nfc \
     com.android.nfc_extras \
     vendor.nxp.nxpese@1.0:64 \
     vendor.nxp.nxpnfc@1.0:64
@@ -253,4 +248,4 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/parts/privapp-permissions-parts.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-parts.xml
 
-PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/prebuilt/modules-20.12.28,$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/lib/modules)
+PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/prebuilt/modules,$(TARGET_COPY_OUT_PRODUCT)/vendor_overlay/$(PRODUCT_TARGET_VNDK_VERSION)/lib/modules)
