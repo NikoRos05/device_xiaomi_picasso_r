@@ -114,7 +114,6 @@ system_ext/lib64/libmmrtpencoder.so
 system_ext/lib64/vendor.qti.hardware.vpp@1.1.so
 
 # Perf - from LA.QSSI.11.0.r1-08800-qssi.0
--system_ext/app/workloadclassifier/workloadclassifier.apk|df7cc52158da74e78c712bb1f8b1b9725b67d34f
 system_ext/bin/perfservice|bf084e09318dc5f1755bf93327fca085bbc254ae
 system_ext/bin/qspmsvc|46fd4f580590b0e97f41e66ea744ed59586169d2
 system_ext/etc/init/perfservice.rc|7d4732437d2204e06ea09db85f169fef693086e8
