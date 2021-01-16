@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.lineageos.settings.thermal;
+package org.lineageos.settings.fps;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,51 +24,65 @@ import android.os.UserHandle;
 import androidx.preference.PreferenceManager;
 
 import org.lineageos.settings.utils.FileUtils;
+import org.lineageos.settings.utils.RefreshRateUtils;
 
-public final class ThermalUtils {
+public final class FPSUtils {
 
-    private static final String THERMAL_CONTROL = "thermal_control";
+    private static final String FPS_CONTROL = "fps_control";
+    private static final String FPS_SERVICE = "fps_service";
 
-    protected static final int STATE_DEFAULT = 0;
-    protected static final int STATE_BENCHMARK = 1;
-    protected static final int STATE_CAMERA = 2;
-    protected static final int STATE_DIALER = 3;
-    protected static final int STATE_GAMING = 4;
+    protected static final int STATE_120 = 0;
+    protected static final int STATE_90 = 1;
+    protected static final int STATE_60 = 2;
+    protected static final int STATE_30 = 3;
 
-    private static final String THERMAL_STATE_DEFAULT = "0";
-    private static final String THERMAL_STATE_BENCHMARK = "10";
-    private static final String THERMAL_STATE_CAMERA = "12";
-    private static final String THERMAL_STATE_DIALER = "8";
-    private static final String THERMAL_STATE_GAMING = "13";
+    private static final int FPS_STATE_120 = 4;
+    private static final int FPS_STATE_90 = 3;
+    private static final int FPS_STATE_60 = 2;
+    private static final int FPS_STATE_30 = 1;
 
-    private static final String THERMAL_BENCHMARK = "thermal.benchmark=";
-    private static final String THERMAL_CAMERA = "thermal.camera=";
-    private static final String THERMAL_DIALER = "thermal.dialer=";
-    private static final String THERMAL_GAMING = "thermal.gaming=";
-
-    private static final String THERMAL_SCONFIG = "/sys/class/thermal/thermal_message/sconfig";
+    private static final String FPS_120 = "fps.120=";
+    private static final String FPS_90 = "fps.90=";
+    private static final String FPS_60 = "fps.60=";
+    private static final String FPS_30 = "fps.30=";
 
     private SharedPreferences mSharedPrefs;
 
-    protected ThermalUtils(Context context) {
+    protected FPSUtils(Context context) {
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public static void startService(Context context) {
-        context.startServiceAsUser(new Intent(context, ThermalService.class),
+    public static void initialize(Context context) {
+        if (isServiceEnabled(context))
+            startService(context);
+        else
+            setDefaultFPSProfile();
+    }
+
+    protected static void startService(Context context) {
+        context.startServiceAsUser(new Intent(context, FPSService.class),
                 UserHandle.CURRENT);
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(FPS_SERVICE, "true").apply();
+    }
+
+    protected static void stopService(Context context) {
+        context.stopService(new Intent(context, FPSService.class));
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(FPS_SERVICE, "false").apply();
+    }
+
+    protected static boolean isServiceEnabled(Context context) {
+        return Boolean.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(FPS_SERVICE, "false"));
     }
 
     private void writeValue(String profiles) {
-        mSharedPrefs.edit().putString(THERMAL_CONTROL, profiles).apply();
+        mSharedPrefs.edit().putString(FPS_CONTROL, profiles).apply();
     }
 
     private String getValue() {
-        String value = mSharedPrefs.getString(THERMAL_CONTROL, null);
+        String value = mSharedPrefs.getString(FPS_CONTROL, null);
 
         if (value == null || value.isEmpty()) {
-            value = THERMAL_BENCHMARK + ":" + THERMAL_CAMERA + ":" +
-                    THERMAL_DIALER + ":" + THERMAL_GAMING;
+            value = FPS_120 + ":" + FPS_90 + ":" + FPS_60 + ":" + FPS_30;
             writeValue(value);
         }
         return value;
@@ -81,16 +95,16 @@ public final class ThermalUtils {
         String finalString;
 
         switch (mode) {
-            case STATE_BENCHMARK:
+            case STATE_120:
                 modes[0] = modes[0] + packageName + ",";
                 break;
-            case STATE_CAMERA:
+            case STATE_90:
                 modes[1] = modes[1] + packageName + ",";
                 break;
-            case STATE_DIALER:
+            case STATE_60:
                 modes[2] = modes[2] + packageName + ",";
                 break;
-            case STATE_GAMING:
+            case STATE_30:
                 modes[3] = modes[3] + packageName + ",";
                 break;
         }
@@ -103,42 +117,42 @@ public final class ThermalUtils {
     protected int getStateForPackage(String packageName) {
         String value = getValue();
         String[] modes = value.split(":");
-        int state = STATE_DEFAULT;
+        int state = STATE_120;
         if (modes[0].contains(packageName + ",")) {
-            state = STATE_BENCHMARK;
+            state = STATE_120;
         } else if (modes[1].contains(packageName + ",")) {
-            state = STATE_CAMERA;
+            state = STATE_90;
         } else if (modes[2].contains(packageName + ",")) {
-            state = STATE_DIALER;
+            state = STATE_60;
         } else if (modes[3].contains(packageName + ",")) {
-            state = STATE_GAMING;
+            state = STATE_30;
         }
 
         return state;
     }
 
-    protected void setDefaultThermalProfile() {
-        FileUtils.writeLine(THERMAL_SCONFIG, THERMAL_STATE_DEFAULT);
+    protected static void setDefaultFPSProfile() {
+        RefreshRateUtils.setFPS(FPS_STATE_120); 
     }
 
-    protected void setThermalProfile(String packageName) {
+    protected void setFPSProfile(String packageName) {
         String value = getValue();
         String modes[];
-        String state = THERMAL_STATE_DEFAULT;
+        int state = FPS_STATE_120;
 
         if (value != null) {
             modes = value.split(":");
 
             if (modes[0].contains(packageName + ",")) {
-                state = THERMAL_STATE_BENCHMARK;
+                state = FPS_STATE_120;
             } else if (modes[1].contains(packageName + ",")) {
-                state = THERMAL_STATE_CAMERA;
+                state = FPS_STATE_90;
             } else if (modes[2].contains(packageName + ",")) {
-                state = THERMAL_STATE_DIALER;
+                state = FPS_STATE_60;
             } else if (modes[3].contains(packageName + ",")) {
-                state = THERMAL_STATE_GAMING;
+                state = FPS_STATE_30;
             }
         }
-        FileUtils.writeLine(THERMAL_SCONFIG, state);
+        RefreshRateUtils.setFPS(state); 
     }
 }
