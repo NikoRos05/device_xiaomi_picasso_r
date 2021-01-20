@@ -32,7 +32,6 @@ ro.charger.enable_suspend=true
 ro.face.moto_unlock_service.cam_id=5
 
 # Graphics
-debug.hwui.renderer=skiavk
 debug.sf.early_app_phase_offset_ns=500000
 debug.sf.early_gl_app_phase_offset_ns=15000000
 debug.sf.early_gl_phase_offset_ns=3000000
@@ -40,7 +39,7 @@ debug.sf.early_phase_offset_ns=500000
 debug.sf.enable_gl_backpressure=1
 debug.sf.high_fps_early_phase_offset_ns=6100000
 debug.sf.high_fps_early_gl_phase_offset_ns=9000000
-debug.sf.hw=0
+debug.sf.hw=1
 debug.sf.phase_offset_threshold_for_next_vsync_ns=6100000
 persist.demo.hdmirotationlock=false
 persist.hwc.enable_vds=1
@@ -75,6 +74,9 @@ ro.control_privapp_permissions=log
 
 # LMKD
 ro.config.low_ram = false
+
+# Shutdown
+ro.build.shutdown_timeout=2
 
 # Smart fps switch
 ro.vendor.smart_dfps.enable=false
