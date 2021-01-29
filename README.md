@@ -1,20 +1,4 @@
-![Octavi](https://raw.githubusercontent.com/Octavi-OS/Docs/main/Source.png "Octavi")
 
-OctaviOS 1.4 (A11/R) for Redmi K30 5G (picasso)
-======================================
-
-# How to build
-
-Download Octavi's source and picasso repos. You can have a look at my manifest:
-
-https://github.com/masemoel/local_manifests/blob/master/picasso_r.xml
-
-Then go to the source folder and run:
-
-```bash
-. build/envsetup.sh
-brunch picasso
-```
 
 # Device specifications
 
