@@ -29,4 +29,3 @@ Sensors | Fingerprint ID with the power button, infrared, 3.5mm jack
 
 ![Xiaomi Redmi K30 5G](https://cdn.cnbj0.fds.api.mi-img.com/b2c-shopapi-pms/pms_1575882160.38569692.jpg "Xiaomi Redmi K30 5G")
 # device_xiaomi_picasso_r
-# device_xiaomi_picasso_r
