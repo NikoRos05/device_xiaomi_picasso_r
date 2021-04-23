@@ -72,4 +72,7 @@
 
     <!-- Make device support FaceUnlock preventing false opening gestures -->
     <bool name="config_faceAuthOnlyOnSecurityView">true</bool>
+    
+    <!-- Max visible system icons -->
+    <integer name="config_maxVisibleStatusIconContainer">10</integer>
 </resources>
